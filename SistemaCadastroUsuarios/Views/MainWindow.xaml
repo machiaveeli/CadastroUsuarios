@@ -1,0 +1,17 @@
+﻿<Window x:Class="SistemaCadastroUsuarios.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SistemaCadastroUsuarios"
+        mc:Ignorable="d"
+        Title="Login" Height="450" Width="800">
+    <Grid>
+        <Label Content="Login
+" HorizontalAlignment="Center" Height="31" Margin="0,106,0,0" VerticalAlignment="Top" Width="42"/>
+        <TextBox x:Name="usuario" HorizontalAlignment="Center" Height="19" Margin="0,181,0,0" TextWrapping="Wrap" Text="Usuário" VerticalAlignment="Top" Width="204"/>
+        <TextBox x:Name="senha" HorizontalAlignment="Center" Height="19" Margin="0,233,0,0" TextWrapping="Wrap" Text="Senha" VerticalAlignment="Top" Width="204"/>
+        <Button Content="Acessar" Margin="232,283,232,120" Click="Tela_Cadastro_Click"/>
+
+    </Grid>
+</Window>
