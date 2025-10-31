@@ -1,0 +1,16 @@
+# Pastas de compilação
+[Bb]in/
+[Oo]bj/
+
+# Arquivos temporários e de build do Visual Studio / VS Code
+*.suo
+*.user
+*.log
+*.cache
+*.i.cs
+*.idef
+*.lref
+
+# Arquivos de solução e outros
+*.sln.docstates
+.vs/
