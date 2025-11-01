@@ -21,12 +21,11 @@ namespace SistemaCadastroUsuarios
             InitializeComponent();
         }
 
-        private void Tela_Cadastro_Click(object sender, RoutedEventArgs e)
+        private void BtnAcessar_Click(object sender, RoutedEventArgs e)
         {
             TelaDeCadastro telaDeCadastro = new TelaDeCadastro();
 
             telaDeCadastro.Show();
         }
-
     }
 }
