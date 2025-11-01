@@ -5,13 +5,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SistemaCadastroUsuarios"
         mc:Ignorable="d"
-        Title="Login" Height="450" Width="800">
-    <Grid>
-        <Label Content="Login
-" HorizontalAlignment="Center" Height="31" Margin="0,106,0,0" VerticalAlignment="Top" Width="42"/>
-        <TextBox x:Name="usuario" HorizontalAlignment="Center" Height="19" Margin="0,181,0,0" TextWrapping="Wrap" Text="Usuário" VerticalAlignment="Top" Width="204"/>
-        <TextBox x:Name="senha" HorizontalAlignment="Center" Height="19" Margin="0,233,0,0" TextWrapping="Wrap" Text="Senha" VerticalAlignment="Top" Width="204"/>
-        <Button Content="Acessar" Margin="232,283,232,120" Click="Tela_Cadastro_Click"/>
+        Title="Login do Sistema" 
+        Width="350"
+        SizeToContent="Height" 
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanMinimize">
 
-    </Grid>
+    <StackPanel Margin="20">
+
+        <TextBlock Text="Login" 
+                   FontSize="24" 
+                   FontWeight="Bold" 
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,20"/>
+
+        <Label Content="Usuário:" 
+               FontSize="14"/>
+        <TextBox x:Name="txtUsuario" 
+                 FontSize="14" 
+                 Padding="5"
+                 Margin="0,0,0,10"/>
+
+        <Label Content="Senha:" 
+               FontSize="14"/>
+        <PasswordBox x:Name="pwdSenha" 
+                     FontSize="14" 
+                     Padding="5"
+                     Margin="0,0,0,20"/>
+
+        <Button x:Name="btnAcessar" 
+                Content="Acessar" 
+                Click="BtnAcessar_Click"
+                FontSize="16"
+                FontWeight="Bold"
+                Padding="10"
+                Cursor="Hand"/>
+
+    </StackPanel>
 </Window>

@@ -23,5 +23,15 @@ namespace SistemaCadastroUsuarios
         {
             InitializeComponent();
         }
+
+        private void BtnLimpar_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnAdicionar_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
