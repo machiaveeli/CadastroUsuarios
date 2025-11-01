@@ -9,11 +9,14 @@ namespace SistemaCadastroUsuarios.Models
     public class UserRole
     {
         public int Id { get; set; }
-        public bool Administrador { get; set; } = false;
+        public string Nome { get; set; }
 
-        public UserRole(bool administrador)
+        public UserRole() { }
+
+        public UserRole(int id, string nome)
         {
-            Administrador = administrador;
+            Id = id;
+            Nome = nome;
         }
     }
 }

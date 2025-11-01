@@ -8,14 +8,16 @@ namespace SistemaCadastroUsuarios.Models
 {
     public class Usuario : Pessoa
     {
-        public string Login {  get; set; }
+        public string Email {  get; set; }
         public string Senha { get; set; }
+        public int UserRoleId { get; set; }
 
-        public Usuario(string nome, DateTime dataNascimento, string cpf, string login, string senha)
+        public Usuario(string nome, DateTime dataNascimento, string cpf, string email, string senha, int userRoleId)
             :base(nome, dataNascimento, cpf)
         { 
-            Login = login;
+            Email = email;
             Senha = senha;
+            UserRoleId = userRoleId; ;
         }
     }
 }

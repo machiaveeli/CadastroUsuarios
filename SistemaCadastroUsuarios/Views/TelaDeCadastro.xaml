@@ -64,8 +64,8 @@
                            FontSize="18" FontWeight="Bold"
                            Margin="0,0,0,15"/>
 
-                <Label Content="Login:" Grid.Row="1" Grid.Column="0"/>
-                <TextBox x:Name="txtLogin" Grid.Row="1" Grid.Column="1"/>
+                <Label Content="Email:" Grid.Row="1" Grid.Column="0"/>
+                <TextBox x:Name="txtEmail" Grid.Row="1" Grid.Column="1"/>
 
                 <Label Content="Senha:" Grid.Row="2" Grid.Column="0"/>
                 <PasswordBox x:Name="txtSenha" Grid.Row="2" Grid.Column="1"/>
