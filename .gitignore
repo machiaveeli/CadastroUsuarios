@@ -1,16 +1,56 @@
-# Pastas de compilação
-[Bb]in/
-[Oo]bj/
+###########################
+## IGNORE PADRÃO DO GIT ##
+###########################
 
-# Arquivos temporários e de build do Visual Studio / VS Code
+# User-specific files
+# Ignora arquivos de configuração de sessão e layout do VS/VS Code
+*.rsuser
 *.suo
 *.user
-*.log
+*.userosscache
+*.sln.docstates
+*.env
+
+# Pasta de cache de sessão do Visual Studio 2017 e mais novos
+.vs/
+
+# Resultados de Compilação (Build Results)
+# Ignora binários e arquivos intermediários
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Ll]og/
+[Ll]ogs/
+**/[Bb]in/*
+**/[Oo]bj/*
+
+# Cache e Arquivos Temporários Comuns (C# / .NET)
 *.cache
 *.i.cs
 *.idef
 *.lref
+*.log
+*.tmp
+*.pdb
+*.ilk
+*.aps
+*.bsc
+*.ncb
+*.sbr
+*.tlb
+*.tlh
+*.bak
+*.trc
+*.testrunconfig
+*.testsettings
 
-# Arquivos de solução e outros
-*.sln.docstates
-.vs/
+# Pacotes de Dependência (NuGet)
+# Isso impede que milhares de DLLs sejam rastreadas
+[Pp]ackages/
+*.nupkg
+*.nuspec
