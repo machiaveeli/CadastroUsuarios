@@ -12,6 +12,8 @@ namespace SistemaCadastroUsuarios.Models
         public string Senha { get; set; }
         public int UserRoleId { get; set; }
 
+        public Usuario() { }
+
         public Usuario(string nome, DateTime dataNascimento, string cpf, string email, string senha, int userRoleId)
             :base(nome, dataNascimento, cpf)
         { 

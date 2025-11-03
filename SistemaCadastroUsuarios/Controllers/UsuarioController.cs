@@ -5,30 +5,49 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using SistemaCadastroUsuarios.Services;
 
 namespace SistemaCadastroUsuarios.Controllers
 {
     public class UsuarioController
     {
         private readonly TelaDeCadastro _view;
+        private readonly IUsuarioService _usuarioService;
 
-        public UsuarioController(TelaDeCadastro view)
+        public UsuarioController(TelaDeCadastro view, IUsuarioService usuarioService)
         {
             _view = view;
+            _usuarioService = usuarioService;
         }
 
-        public void adicionarUsuario(string nome, DateTime? dataNasci, string cpf, string email, string senha, int roleId)
+        public bool adicionarUsuario(string nome, DateTime? dataNasci, string cpf, string email, string senha, int roleId)
         {
             var dadosValidados = validarDados(nome, dataNasci, cpf, email, senha);
 
             if (!dadosValidados)
             {
-                return;
+                return false;
             }
             
             DateTime valorDataNascimento = dataNasci.Value;
 
-            var usuario = new Usuario(nome, valorDataNascimento, cpf, email, senha, roleId);
+            try
+            {
+                var usuario = new Usuario(nome, valorDataNascimento, cpf, email, senha, roleId);
+                _usuarioService.Adicionar(usuario);
+
+                var listaAtualizada = _usuarioService.ListarTodos();
+                _view.AtualizarListaDeUsuarios(listaAtualizada);
+
+                MessageBox.Show($"Usuário '{nome}' cadastrado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                return true;
+            }
+            catch (Exception ex) 
+            {
+                MessageBox.Show($"Erro ao salvar no banco: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
         }
 
         private bool validarDados(string nome, DateTime? dataNasci, string cpf, string email, string senha)

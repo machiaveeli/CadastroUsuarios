@@ -13,6 +13,7 @@ namespace SistemaCadastroUsuarios.Models
         public DateTime DataNascimento { get; set; }
         public string Cpf { get; set; }
 
+        public Pessoa() { }
         public Pessoa(string nome, DateTime dataNascimento, string cpf)
         {
             Nome = nome;
