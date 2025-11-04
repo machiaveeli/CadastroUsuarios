@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Google.Protobuf.WellKnownTypes;
+using SistemaCadastroUsuarios.Controllers;
+using SistemaCadastroUsuarios.Models;
+using SistemaCadastroUsuarios.Services;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -12,9 +16,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using SistemaCadastroUsuarios.Controllers;
-using SistemaCadastroUsuarios.Models;
-using SistemaCadastroUsuarios.Services;
 
 namespace SistemaCadastroUsuarios
 {
@@ -25,7 +26,7 @@ namespace SistemaCadastroUsuarios
     {
         private readonly UsuarioController _controller;
         private Usuario _usuarioSelecionado = null;
-        private List<Usuario> _todosUsuarios = new List<Usuario>(); 
+        private List<Usuario> _todosUsuarios = new List<Usuario>();
 
         public TelaDeCadastro()
         {
@@ -42,13 +43,13 @@ namespace SistemaCadastroUsuarios
 
         private void CarregarUsuarios()
         {
-            try 
+            try
             {
                 _todosUsuarios = _controller.ListarTodosUsuarios();
 
                 AtualizarListaDeUsuarios(_todosUsuarios);
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao carregar usuários: {ex.Message}", "Erro");
             }
@@ -65,9 +66,9 @@ namespace SistemaCadastroUsuarios
 
             try
             {
-                if(_usuarioSelecionado == null)
+                if (_usuarioSelecionado == null)
                 {
-                    _controller.CriarUsuario( 
+                    _controller.CriarUsuario(
                         txtNome.Text,
                         dpDataNascimento.SelectedDate,
                         txtCpf.Text,
@@ -79,7 +80,7 @@ namespace SistemaCadastroUsuarios
                 {
                     int idUsuarioParaAtualizar = _usuarioSelecionado.Id;
 
-                    _controller.AtualizarUsuario( 
+                    _controller.AtualizarUsuario(
                         idUsuarioParaAtualizar,
                         txtNome.Text,
                         dpDataNascimento.SelectedDate,
@@ -100,7 +101,7 @@ namespace SistemaCadastroUsuarios
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao salvar: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-            } 
+            }
         }
 
         private void LimparFormulario()
@@ -149,12 +150,46 @@ namespace SistemaCadastroUsuarios
 
         private void BtnExcluir_Click(object sender, RoutedEventArgs e)
         {
+            int idUsuarioParaDeletar = _usuarioSelecionado.Id;
 
+            try
+            {
+                _controller.ExcluirUsuario(idUsuarioParaDeletar);
+
+                MessageBox.Show("Usuário deletado com sucecsso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                LimparFormulario();
+                CarregarUsuarios();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao deletar: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void TxtPesquisar_TextChanged(object sender, TextChangedEventArgs e)
         {
-            
+            string termo = txtPesquisar.Text;
+
+            var usuariosEncontrados = _controller.BuscarUsuario(termo);
+
+            dgUsuarios.ItemsSource = usuariosEncontrados;
+        }
+
+        private void BtnPesquisar_Click(object sender, RoutedEventArgs e)
+        {
+            string termo = txtPesquisar.Text;
+            List<Usuario> usuariosParaExibir;
+
+            if (string.IsNullOrWhiteSpace(termo))
+            {
+                usuariosParaExibir = _todosUsuarios;
+            }
+            else
+            {
+                usuariosParaExibir = _controller.BuscarUsuario(termo);
+            }
+            dgUsuarios.ItemsSource = usuariosParaExibir;
         }
     }
 }

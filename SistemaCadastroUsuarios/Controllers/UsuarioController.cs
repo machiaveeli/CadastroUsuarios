@@ -28,6 +28,16 @@ namespace SistemaCadastroUsuarios.Controllers
             return _usuarioService.AtualizarUsuario(id, nome, dataNasci, cpf, email, senha, idPermissao);
         }
 
+        public bool ExcluirUsuario(int id)
+        {
+            return _usuarioService.ExcluirUsuario(id);
+        }
+
+        public List<Usuario> BuscarUsuario(string termo) 
+        { 
+            return _usuarioService.BuscarUsuarios(termo);
+        }
+
         public List<Usuario> ListarTodosUsuarios()
         {
             return _usuarioService.ListarTodosUsuarios();

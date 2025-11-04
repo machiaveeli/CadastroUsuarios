@@ -208,9 +208,11 @@ namespace SistemaCadastroUsuarios.Services
                                   JOIN 
                                     Usuario u ON u.PessoaId = p.Id
                                   WHERE
-                                    Nome  LIKE @termo 
+                                    p.Nome  LIKE @termo 
                                     OR
-                                    Email LIKE @termo";
+                                    u.Email LIKE @termo
+                                    OR 
+                                    p.Cpf LIKE @termo";
                 using (var command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@termo", $"%{termo}%");

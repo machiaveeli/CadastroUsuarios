@@ -57,12 +57,19 @@ namespace SistemaCadastroUsuarios.Controllers
             return true;
         }
 
-        public void ExcluirUsuario(int id)
+        public bool ExcluirUsuario(int id)
         {
             if (id <= 0)
                 throw new ArgumentException("ID de usuário inválido.");
 
             _usuarioDAO.Excluir(id); 
+
+            return true;
+        }
+
+        public List<Usuario> BuscarUsuarios(string termo)
+        {
+            return _usuarioDAO.Buscar(termo);
         }
 
         public List<Usuario> ListarTodosUsuarios()
