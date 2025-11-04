@@ -105,6 +105,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controllers\UsuarioController.cs" />
+    <Compile Include="Services\InMemoryUsuarioService.cs" />
     <Compile Include="Services\IUsuarioService.cs" />
     <Compile Include="Services\UsuarioService.cs" />
     <Compile Include="DAO\IUsuarioDAO.cs" />
