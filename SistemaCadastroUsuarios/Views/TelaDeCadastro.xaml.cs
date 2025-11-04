@@ -34,7 +34,9 @@ namespace SistemaCadastroUsuarios
 
             IUsuarioDAO servicoDeDados = new MySqlUsuarioDAO();
 
-            IUsuarioService servicoDeLogica = new UsuarioService(servicoDeDados);
+            IPasswordHasher passwordHasher = new BcryptPasswordHasher();
+
+            IUsuarioService servicoDeLogica = new UsuarioService(servicoDeDados, passwordHasher);
 
             _controller = new UsuarioController(servicoDeLogica);
 

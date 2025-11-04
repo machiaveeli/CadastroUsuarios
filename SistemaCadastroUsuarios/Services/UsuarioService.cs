@@ -13,9 +13,13 @@ namespace SistemaCadastroUsuarios.Controllers
     {
         private readonly IUsuarioDAO _usuarioDAO;
 
-        public UsuarioService(IUsuarioDAO usuarioService)
+        private readonly IPasswordHasher _passwordHasher;
+
+        public UsuarioService(IUsuarioDAO usuarioService, IPasswordHasher passwordHasher)
         {
             _usuarioDAO = usuarioService;
+
+            _passwordHasher = passwordHasher;
         }
 
         public bool AdicionarUsuario(string nome, DateTime? dataNasci, string cpf, string email, string senha, int idPermissao)
@@ -26,7 +30,9 @@ namespace SistemaCadastroUsuarios.Controllers
 
             DateTime valorDataNascimento = dataNasci.Value;
 
-            var usuario = new Usuario(nome, valorDataNascimento, cpf, email, senha, idPermissao);
+            string senhaHash = _passwordHasher.HashPassword(senha);
+
+            var usuario = new Usuario(nome, valorDataNascimento, cpf, email, senhaHash, idPermissao);
 
             _usuarioDAO.Adicionar(usuario);
 
@@ -41,6 +47,13 @@ namespace SistemaCadastroUsuarios.Controllers
 
             DateTime valorDataNascimento = dataNasci.Value;
 
+            string senhaHash = senha;
+
+            if (!string.IsNullOrEmpty(senha)) 
+            {
+                senhaHash = _passwordHasher.HashPassword(senha);
+            }
+
             var usuario = new Usuario
             {
                 Id = id,
@@ -48,7 +61,7 @@ namespace SistemaCadastroUsuarios.Controllers
                 DataNascimento = valorDataNascimento,
                 Cpf = cpf,
                 Email = email,
-                Senha = senha,
+                Senha = senhaHash,
                 UserRoleId = idPermissao
             };
 
