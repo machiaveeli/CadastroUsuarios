@@ -12,6 +12,17 @@ namespace SistemaCadastroUsuarios.Models
         public string Senha { get; set; }
         public int UserRoleId { get; set; }
 
+        /// <summary>
+        /// Propriedade "Helper" que traduz o UserRoleId para o DataGrid.
+        /// O 'Binding="{Binding IsAdmin}"' vai usar isto.
+        /// </summary>
+        public bool IsAdmin
+        {
+            get { return UserRoleId == 2; }
+        }
+
+        public Usuario() { }
+
         public Usuario(string nome, DateTime dataNascimento, string cpf, string email, string senha, int userRoleId)
             :base(nome, dataNascimento, cpf)
         { 

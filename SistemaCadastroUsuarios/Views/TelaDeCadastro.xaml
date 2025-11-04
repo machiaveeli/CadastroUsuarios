@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SistemaCadastroUsuarios"
         mc:Ignorable="d"
-        Title="Cadastro de Usuários" 
-        Height="650" Width="600"
+        Title="Gestão de Usuários" 
+        Height="700" Width="800"
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
@@ -38,6 +38,7 @@
 
     <Grid Margin="15">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -88,26 +89,46 @@
                             HorizontalAlignment="Right"
                             Margin="0,15,0,0">
 
-                    <Button x:Name="btnLimpar" Content="Limpar Campos" Click="BtnLimpar_Click"/>
+                    <Button x:Name="btnLimpar" Content="Limpar / Novo" Click="BtnLimpar_Click"/>
+
+                    <Button x:Name="btnExcluir" Content="Excluir" Click="BtnExcluir_Click" 
+                            Background="#FFFBF0F0" BorderBrush="#FFDC3C3C" IsEnabled="False"/>
+
                     <Button x:Name="btnAdicionar" Content="Adicionar Usuário" Click="BtnAdicionar_Click" FontWeight="Bold"/>
 
                 </StackPanel>
             </Grid>
         </Border>
 
-        <DataGrid x:Name="dgUsuarios" Grid.Row="1" 
-                  AutoGenerateColumns="False" 
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,15,0,0">
+            <Label Content="Pesquisar por Nome/CPF:" VerticalAlignment="Center" Padding="0,5" Margin="0,0,5,0"/>
+
+            <TextBox x:Name="txtPesquisar" Width="300" 
+             FontSize="14" Padding="5" VerticalAlignment="Center"/>
+
+            <Button x:Name="btnPesquisar" 
+            Content="Buscar" 
+            Click="BtnPesquisar_Click" 
+            VerticalAlignment="Center"
+            Margin="5,0,0,0" 
+            MinWidth="80"/>
+        </StackPanel>
+
+        <DataGrid x:Name="dgUsuarios" 
+                  Grid.Row="2" AutoGenerateColumns="False" 
                   IsReadOnly="True"
                   Margin="0,15,0,0"
-                  FontSize="14">
-
+                  FontSize="14"
+                  
+                  SelectionMode="Single" 
+                  SelectionChanged="DgUsuarios_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
-                <DataGridTextColumn Header="Login" Binding="{Binding Login}" Width="*"/>
+                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*"/>
                 <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="2*"/>
                 <DataGridTextColumn Header="CPF" Binding="{Binding Cpf}" Width="*"/>
                 <DataGridTextColumn Header="Data Nasc." Binding="{Binding DataNascimento, StringFormat='d'}" Width="*"/>
-                <DataGridCheckBoxColumn Header="Admin" Binding="{Binding IsAdmin}" Width="Auto"/>
+                <DataGridCheckBoxColumn Header="Admin" Binding="{Binding IsAdmin, Mode=OneWay}" Width="Auto"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

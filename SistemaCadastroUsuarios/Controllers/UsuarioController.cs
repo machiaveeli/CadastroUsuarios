@@ -1,4 +1,5 @@
 ﻿using SistemaCadastroUsuarios.Models;
+using SistemaCadastroUsuarios.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,60 +11,36 @@ namespace SistemaCadastroUsuarios.Controllers
 {
     public class UsuarioController
     {
-        private readonly TelaDeCadastro _view;
+        private readonly IUsuarioService _usuarioService;
 
-        public UsuarioController(TelaDeCadastro view)
+        public UsuarioController(IUsuarioService usuarioService)
         {
-            _view = view;
+            _usuarioService = usuarioService;
         }
 
-        public void adicionarUsuario(string nome, DateTime? dataNasci, string cpf, string email, string senha, int roleId)
+        public bool CriarUsuario(string nome, DateTime? dataNasci, string cpf, string email, string senha, int idPermissao)
         {
-            var dadosValidados = validarDados(nome, dataNasci, cpf, email, senha);
-
-            if (!dadosValidados)
-            {
-                return;
-            }
-            
-            DateTime valorDataNascimento = dataNasci.Value;
-
-            var usuario = new Usuario(nome, valorDataNascimento, cpf, email, senha, roleId);
+            return _usuarioService.AdicionarUsuario(nome, dataNasci, cpf, email, senha, idPermissao);
         }
 
-        private bool validarDados(string nome, DateTime? dataNasci, string cpf, string email, string senha)
+        public bool AtualizarUsuario(int id, string nome, DateTime? dataNasci, string cpf, string email, string senha, int idPermissao)
         {
-            if (string.IsNullOrEmpty(nome))
-            {
-                MessageBox.Show("O campo 'Nome' é obrigatório.", "Erro de Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
+            return _usuarioService.AtualizarUsuario(id, nome, dataNasci, cpf, email, senha, idPermissao);
+        }
 
-            if (!dataNasci.HasValue)
-            {
-                MessageBox.Show("O campo 'Data de Nasc' é obrigatório.", "Erro de Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
+        public bool ExcluirUsuario(int id)
+        {
+            return _usuarioService.ExcluirUsuario(id);
+        }
 
-            if (string.IsNullOrWhiteSpace(cpf))
-            {
-                MessageBox.Show("O campo 'CPF' é obrigatório.", "Erro de Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
+        public List<Usuario> BuscarUsuario(string termo) 
+        { 
+            return _usuarioService.BuscarUsuarios(termo);
+        }
 
-            if (string.IsNullOrEmpty(email))
-            {
-                MessageBox.Show("O campo 'Email' é obrigatório.", "Erro de Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(senha))
-            {
-                MessageBox.Show("O campo 'Senha' é obrigatório.", "Erro de Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            return true;
+        public List<Usuario> ListarTodosUsuarios()
+        {
+            return _usuarioService.ListarTodosUsuarios();
         }
     }
 }
