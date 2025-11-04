@@ -121,7 +121,7 @@
                 <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="2*"/>
                 <DataGridTextColumn Header="CPF" Binding="{Binding Cpf}" Width="*"/>
                 <DataGridTextColumn Header="Data Nasc." Binding="{Binding DataNascimento, StringFormat='d'}" Width="*"/>
-                <DataGridCheckBoxColumn Header="Admin" Binding="{Binding IsAdmin}" Width="Auto"/>
+                <DataGridCheckBoxColumn Header="Admin" Binding="{Binding IsAdmin, Mode=OneWay}" Width="Auto"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

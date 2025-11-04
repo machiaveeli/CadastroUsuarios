@@ -9,10 +9,10 @@ namespace SistemaCadastroUsuarios.Services
 {
     public interface IUsuarioService
     {
-        void Adicionar(Usuario usuario);
-        void Atualizar(Usuario aluno);
-        void Excluir(int id);
-        List<Usuario> ListarTodos();
-        List<Usuario> Buscar(string termo);
+        bool AdicionarUsuario(string nome, DateTime? dataNasci, string cpf, string email, string senha, int idPermissao);
+        bool AtualizarUsuario(int id, string nome, DateTime? dataNasci, string cpf, string email, string senha, int idPermissao);
+        void ExcluirUsuario(int id);
+        List<Usuario> ListarTodosUsuarios();
+        bool ValidarDados(string nome, DateTime? dataNasci, string cpf, string email, string senha, bool ehUpdate);
     }
 }

@@ -106,7 +106,9 @@
     </ApplicationDefinition>
     <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Services\IUsuarioService.cs" />
-    <Compile Include="Services\MySqlUsuarioService.cs" />
+    <Compile Include="Services\UsuarioService.cs" />
+    <Compile Include="DAO\IUsuarioDAO.cs" />
+    <Compile Include="DAO\MySqlUsuarioDAO.cs" />
     <Compile Include="Views\TelaDeCadastro.xaml.cs">
       <DependentUpon>TelaDeCadastro.xaml</DependentUpon>
     </Compile>

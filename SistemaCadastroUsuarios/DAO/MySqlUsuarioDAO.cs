@@ -9,7 +9,7 @@ using System.Transactions;
 
 namespace SistemaCadastroUsuarios.Services
 {
-    public class MySqlUsuarioService : IUsuarioService
+    public class MySqlUsuarioDAO : IUsuarioDAO
     {
         private readonly string _connectionString = "Server=localhost;Database=cadastro_db;Uid=root;Pwd=;";
 
@@ -51,6 +51,7 @@ namespace SistemaCadastroUsuarios.Services
                     catch (Exception ex) 
                     { 
                         transaction.Rollback();
+                        throw new Exception("Erro de banco de dados ao adicionar: " + ex.Message, ex);
                     }
                 }
             }
@@ -110,11 +111,11 @@ namespace SistemaCadastroUsuarios.Services
                     try
                     {
                         string queryPessoa = @"UPDATE Pessoa 
-                                           SET Nome = @nome,
-                                               DataNascimento = @dataNasc,
-                                               Cpf = @cpf
-                                           WHERE 
-                                               Id = @id";
+                                               SET Nome = @nome,
+                                                   DataNascimento = @dataNasc,
+                                                   Cpf = @cpf
+                                               WHERE 
+                                                   Id = @id";
 
                         MySqlCommand cmdPessoa = new MySqlCommand(queryPessoa, connection, transaction);
                         cmdPessoa.Parameters.AddWithValue("@id", usuario.Id);
@@ -124,16 +125,27 @@ namespace SistemaCadastroUsuarios.Services
 
                         cmdPessoa.ExecuteNonQuery();
 
-                        string queryUsuario = @"UPDATE Usuario 
-                                                SET Email = @email,
-                                                    RoleId = @roleId
-                                                WHERE 
-                                                    PessoaId = @pessoaId";
+                        var queryUsuario = new StringBuilder();
+                        queryUsuario.Append(@"UPDATE Usuario 
+                                              SET Email = @email,
+                                                  RoleId = @roleId ");
 
-                        MySqlCommand cmdUsuario = new MySqlCommand(queryUsuario, connection, transaction);
+                        if (!string.IsNullOrEmpty(usuario.Senha))
+                        {
+                            queryUsuario.Append(", Senha = @senha ");
+                        }
+
+                        queryUsuario.Append("WHERE PessoaId = @pessoaId");
+
+                        MySqlCommand cmdUsuario = new MySqlCommand(queryUsuario.ToString(), connection, transaction);
                         cmdUsuario.Parameters.AddWithValue("@pessoaId", usuario.Id);
                         cmdUsuario.Parameters.AddWithValue("@email", usuario.Email);
                         cmdUsuario.Parameters.AddWithValue("@roleId", usuario.UserRoleId);
+
+                        if (!string.IsNullOrEmpty(usuario.Senha))
+                        {
+                            cmdUsuario.Parameters.AddWithValue("@senha", usuario.Senha);
+                        }
 
                         cmdUsuario.ExecuteNonQuery();
 
@@ -142,6 +154,7 @@ namespace SistemaCadastroUsuarios.Services
                     catch (Exception ex)
                     {
                         transaction.Rollback();
+                        throw new Exception("Erro de banco de dados  ao atualizar: " + ex.Message, ex);
                     }
                 }
             }
@@ -158,7 +171,7 @@ namespace SistemaCadastroUsuarios.Services
                     try
                     {
                         string query = @"DELETE FROM Pessoa
-                                     WHERE Id = @id";
+                                         WHERE Id = @id";
 
                         MySqlCommand cmdPessoa = new MySqlCommand(query, connection, transaction);
                         cmdPessoa.Parameters.AddWithValue("@id", id);
@@ -167,10 +180,10 @@ namespace SistemaCadastroUsuarios.Services
 
                         transaction.Commit();
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-
                         transaction.Rollback();
+                        throw new Exception("Erro de banco de dados ao excluir: " + ex.Message, ex);
                     }
                 }
             }
@@ -209,12 +222,12 @@ namespace SistemaCadastroUsuarios.Services
                         {
                             var usuario = new Usuario
                             {
-                                Id = reader.GetInt32("p.Id"),
-                                Nome = reader.GetString("p.Nome"),
-                                DataNascimento = reader.GetDateTime("p.DataNascimento"),
-                                Cpf = reader.GetString("p.Cpf"),
-                                Email = reader.GetString("u.Email"),
-                                UserRoleId = reader.GetInt32("u.RoleId")
+                                Id = reader.GetInt32("Id"),
+                                Nome = reader.GetString("Nome"),
+                                DataNascimento = reader.GetDateTime("DataNascimento"),
+                                Cpf = reader.GetString("Cpf"),
+                                Email = reader.GetString("Email"),
+                                UserRoleId = reader.GetInt32("RoleId")
                             };
                             usuarios.Add(usuario);
                         }
