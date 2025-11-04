@@ -20,9 +20,9 @@ namespace SistemaCadastroUsuarios.Controllers
             _usuarioService = usuarioService;
         }
 
-        public bool adicionarUsuario(string nome, DateTime? dataNasci, string cpf, string email, string senha, int roleId)
+        public bool AdicionarUsuario(string nome, DateTime? dataNasci, string cpf, string email, string senha, int roleId, bool senhaHabilitada)
         {
-            var dadosValidados = validarDados(nome, dataNasci, cpf, email, senha);
+            var dadosValidados = ValidarDados(nome, dataNasci, cpf, email, senha, senhaHabilitada);
 
             if (!dadosValidados)
             {
@@ -50,7 +50,54 @@ namespace SistemaCadastroUsuarios.Controllers
 
         }
 
-        private bool validarDados(string nome, DateTime? dataNasci, string cpf, string email, string senha)
+        public bool AtualizarUsuario(int id, string nome, DateTime? dataNasci, string cpf, string email, string senha, int roleId, bool senhaHabilitada)
+        {
+            var dadosValidados = ValidarDados(nome, dataNasci, cpf, email, senha, senhaHabilitada);
+
+            if (!dadosValidados)
+            {
+                return false;
+            }
+
+            DateTime valorDataNascimento = dataNasci.Value;
+
+            try
+            {
+                var usuario = new Usuario { 
+                    Id = id,
+                    Nome = nome, 
+                    DataNascimento = valorDataNascimento, 
+                    Cpf = cpf, 
+                    Email = email, 
+                    Senha = senha,
+                    UserRoleId = roleId 
+                };
+                _usuarioService.Atualizar(usuario);
+
+                ListarTodosUsuarios();
+
+                MessageBox.Show($"Usuário '{nome}' alterado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao salvar no banco: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+
+        public void ExcluirUsuario()
+        {
+            var resultado = System.Windows.MessageBox.Show("Tem certeza que deseja excluir este usuário?", "Confirmar Exclusão", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+        }
+
+        public void ListarTodosUsuarios()
+        {
+            var listaTodosUsuarios = _usuarioService.ListarTodos();
+            _view.AtualizarListaDeUsuarios(listaTodosUsuarios);
+        }
+
+        private bool ValidarDados(string nome, DateTime? dataNasci, string cpf, string email, string senha, bool senhaHabilitada)
         {
             if (string.IsNullOrEmpty(nome))
             {
@@ -76,7 +123,7 @@ namespace SistemaCadastroUsuarios.Controllers
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(senha))
+            if (string.IsNullOrWhiteSpace(senha) && senhaHabilitada)
             {
                 MessageBox.Show("O campo 'Senha' é obrigatório.", "Erro de Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;

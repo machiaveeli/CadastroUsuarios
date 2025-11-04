@@ -10,6 +10,9 @@ namespace SistemaCadastroUsuarios.Services
     public interface IUsuarioService
     {
         void Adicionar(Usuario usuario);
+        void Atualizar(Usuario aluno);
+        void Excluir(int id);
         List<Usuario> ListarTodos();
+        List<Usuario> Buscar(string termo);
     }
 }
