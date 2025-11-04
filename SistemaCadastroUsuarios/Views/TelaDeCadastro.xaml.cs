@@ -31,9 +31,11 @@ namespace SistemaCadastroUsuarios
         {
             InitializeComponent();
 
-            var servicoDeDados = new MySqlUsuarioService();
+            IUsuarioDAO servicoDeDados = new MySqlUsuarioDAO();
 
-            _controller = new UsuarioController(this, servicoDeDados);
+            IUsuarioService servicoDeLogica = new UsuarioService(servicoDeDados);
+
+            _controller = new UsuarioController(servicoDeLogica);
 
             CarregarUsuarios();
         }
@@ -41,8 +43,10 @@ namespace SistemaCadastroUsuarios
         private void CarregarUsuarios()
         {
             try 
-            { 
-                _controller.ListarTodosUsuarios();
+            {
+                _todosUsuarios = _controller.ListarTodosUsuarios();
+
+                AtualizarListaDeUsuarios(_todosUsuarios);
             }
             catch(Exception ex) 
             {
@@ -57,50 +61,46 @@ namespace SistemaCadastroUsuarios
 
         private void BtnAdicionar_Click(object sender, RoutedEventArgs e)
         {
-            int idPermissao = (chkAdmin.IsChecked ?? false) ? 1 : 2;
-
-            bool sucesso = false;
+            int idPermissao = (chkAdmin.IsChecked ?? false) ? 2 : 1;
 
             try
             {
-                if (_usuarioSelecionado == null)
+                if(_usuarioSelecionado == null)
                 {
-                    sucesso = _controller.AdicionarUsuario(
+                    _controller.CriarUsuario( 
                         txtNome.Text,
                         dpDataNascimento.SelectedDate,
                         txtCpf.Text,
                         txtEmail.Text,
                         txtSenha.Password,
-                        idPermissao,
-                        txtSenha.IsEnabled);
+                        idPermissao);
                 }
                 else
                 {
                     int idUsuarioParaAtualizar = _usuarioSelecionado.Id;
 
-                    sucesso = _controller.AtualizarUsuario(
+                    _controller.AtualizarUsuario( 
                         idUsuarioParaAtualizar,
                         txtNome.Text,
                         dpDataNascimento.SelectedDate,
                         txtCpf.Text,
                         txtEmail.Text,
                         txtSenha.Password,
-                        idPermissao,
-                        txtSenha.IsEnabled);
-
+                        idPermissao);
                 }
+
+                MessageBox.Show("Operação realizada com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                LimparFormulario();
+                CarregarUsuarios();
+            }
+            catch (ArgumentException valEx)
+            {
+                MessageBox.Show(valEx.Message, "Erro de Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             catch (Exception ex)
             {
-
-                MessageBox.Show($"Erro ao salvar: {ex.Message}", "Erro");
-            }
-
-            if (sucesso)
-            {
-                LimparFormulario();
-            }
-            
+                MessageBox.Show($"Erro ao salvar: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            } 
         }
 
         private void LimparFormulario()
@@ -111,15 +111,11 @@ namespace SistemaCadastroUsuarios
             txtEmail.Clear();
             txtSenha.Clear();
             chkAdmin.IsChecked = false;
-
             _usuarioSelecionado = null;
             dgUsuarios.SelectedItem = null;
-
             txtSenha.IsEnabled = true;
-
             btnAdicionar.Content = "Adicionar Usuário";
             btnExcluir.IsEnabled = false;
-
             if (txtPesquisar.Text.Length > 0)
             {
                 txtPesquisar.Clear();
@@ -128,6 +124,7 @@ namespace SistemaCadastroUsuarios
 
         public void AtualizarListaDeUsuarios(List<Usuario> usuarios)
         {
+            _todosUsuarios = usuarios;
             dgUsuarios.ItemsSource = null;
             dgUsuarios.ItemsSource = usuarios;
         }
@@ -135,23 +132,17 @@ namespace SistemaCadastroUsuarios
         private void DgUsuarios_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _usuarioSelecionado = dgUsuarios.SelectedItem as Usuario;
-
             if (_usuarioSelecionado == null)
             {
                 LimparFormulario();
                 return;
             }
-
-            _usuarioSelecionado.Id = _usuarioSelecionado.Id;
-
             txtNome.Text = _usuarioSelecionado.Nome;
             txtEmail.Text = _usuarioSelecionado.Email;
             txtCpf.Text = _usuarioSelecionado.Cpf;
             dpDataNascimento.SelectedDate = _usuarioSelecionado.DataNascimento;
-
-            txtSenha.Clear();
-            txtSenha.IsEnabled = false;
-
+            chkAdmin.IsChecked = (_usuarioSelecionado.UserRoleId == 2);
+            txtSenha.IsEnabled = true;
             btnAdicionar.Content = "Salvar Alterações";
             btnExcluir.IsEnabled = true;
         }
