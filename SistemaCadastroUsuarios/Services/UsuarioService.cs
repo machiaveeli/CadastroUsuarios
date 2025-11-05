@@ -22,11 +22,33 @@ namespace SistemaCadastroUsuarios.Controllers
             _passwordHasher = passwordHasher;
         }
 
+        public bool ValidarLogin(string email, string senha)
+        {
+            var usuarioDoBanco = _usuarioDAO.GetPorEmail(email);
+
+            if (usuarioDoBanco == null)
+            {
+                return false; 
+            }
+
+            if (usuarioDoBanco.UserRoleId != 2)
+            {
+                return false;
+            }
+
+            return _passwordHasher.VerifyPassword(senha, usuarioDoBanco.Senha);
+        }
+
         public bool AdicionarUsuario(string nome, DateTime? dataNasci, string cpf, string email, string senha, int idPermissao)
         {
             bool ehUpate = false;
 
             ValidarDados(nome, dataNasci, cpf, email, senha, ehUpate);
+            
+            if (_usuarioDAO.GetPorEmail(email) != null) 
+            {
+                throw new ArgumentException("Este e-mail já está em uso.");
+            }
 
             DateTime valorDataNascimento = dataNasci.Value;
 
@@ -44,6 +66,12 @@ namespace SistemaCadastroUsuarios.Controllers
             bool ehUpate = true;
 
             ValidarDados(nome, dataNasci, cpf, email, senha, ehUpate);
+
+            var usuarioExistente = _usuarioDAO.GetPorEmail(email); //
+            if (usuarioExistente != null && usuarioExistente.Id != id)
+            {
+                throw new ArgumentException("Este e-mail já está em uso por outro usuário.");
+            }
 
             DateTime valorDataNascimento = dataNasci.Value;
 
