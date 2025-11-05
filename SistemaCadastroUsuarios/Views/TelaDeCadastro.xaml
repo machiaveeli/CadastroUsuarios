@@ -78,7 +78,8 @@
                 <DatePicker x:Name="dpDataNascimento" Grid.Row="4" Grid.Column="1"/>
 
                 <Label Content="CPF:" Grid.Row="5" Grid.Column="0"/>
-                <TextBox x:Name="txtCpf" Grid.Row="5" Grid.Column="1"/>
+                <TextBox x:Name="txtCpf" Grid.Row="5" Grid.Column="1" 
+                         TextChanged="TxtCpf_TextChanged"  MaxLength="14"/>
 
                 <Label Content="Permissões:" Grid.Row="6" Grid.Column="0"/>
                 <CheckBox x:Name="chkAdmin" Content="É Administrador" Grid.Row="6" Grid.Column="1" 
@@ -88,6 +89,19 @@
                             Orientation="Horizontal" 
                             HorizontalAlignment="Right"
                             Margin="0,15,0,0">
+
+                    <!-- 
+                      BOTÃO DE SAIR ADICIONADO AQUI 
+                      Ele precisa do método BtnSair_Click no arquivo .cs
+                    -->
+                    <Button x:Name="BtnSair" 
+                            Content="Sair" 
+                            Click="BtnSair_Click" 
+                            Background="#FFD9534F" 
+                            Foreground="White" 
+                            BorderBrush="#FFD43F3A"
+                            Margin="0,0,0,0"/>
+                    <!-- Fim do botão adicionado -->
 
                     <Button x:Name="btnLimpar" Content="Limpar / Novo" Click="BtnLimpar_Click"/>
 
@@ -127,7 +141,7 @@
                 <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*"/>
                 <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="2*"/>
                 <DataGridTextColumn Header="CPF" Binding="{Binding Cpf}" Width="*"/>
-                <DataGridTextColumn Header="Data Nasc." Binding="{Binding DataNascimento, StringFormat='d'}" Width="*"/>
+                <DataGridTextColumn Header="Idade" Binding="{Binding Idade}" Width="*"/>
                 <DataGridCheckBoxColumn Header="Admin" Binding="{Binding IsAdmin, Mode=OneWay}" Width="Auto"/>
             </DataGrid.Columns>
         </DataGrid>
