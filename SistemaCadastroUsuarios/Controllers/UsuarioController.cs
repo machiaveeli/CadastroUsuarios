@@ -33,6 +33,16 @@ namespace SistemaCadastroUsuarios.Controllers
             return _usuarioService.ExcluirUsuario(id);
         }
 
+        public bool FazerLogin(string email, string senha)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(senha))
+            {
+                return false;
+            }
+
+            return _usuarioService.ValidarLogin(email, senha);
+        }
+
         public List<Usuario> BuscarUsuario(string termo) 
         { 
             return _usuarioService.BuscarUsuarios(termo);
