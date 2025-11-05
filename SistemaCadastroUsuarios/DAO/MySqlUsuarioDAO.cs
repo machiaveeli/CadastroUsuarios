@@ -240,5 +240,53 @@ namespace SistemaCadastroUsuarios.Services
             return usuarios;
         }
 
+        public Usuario GetPorEmail(string email)
+        {
+            Usuario usuario = null;
+
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = @"SELECT 
+                                    p.Id, 
+                                    p.Nome, 
+                                    p.DataNascimento, 
+                                    p.Cpf, 
+                                    u.Email, 
+                                    u.Senha, 
+                                    u.RoleId 
+                                FROM 
+                                    Usuario u
+                                JOIN 
+                                    Pessoa p ON p.Id = u.PessoaId
+                                WHERE 
+                                    u.Email = @email";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@email", email);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            usuario = new Usuario
+                            {
+                                Id = reader.GetInt32("Id"),
+                                Nome = reader.GetString("Nome"),
+                                DataNascimento = reader.GetDateTime("DataNascimento"),
+                                Cpf = reader.GetString("Cpf"),
+                                Email = reader.GetString("Email"),
+                                Senha = reader.GetString("Senha"),
+                                UserRoleId = reader.GetInt32("RoleId")
+                            };
+                        }
+                    }
+
+                }
+            }
+            return usuario;
+        }
+
     }
 }
