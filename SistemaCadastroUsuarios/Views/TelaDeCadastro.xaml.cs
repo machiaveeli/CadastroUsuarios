@@ -16,6 +16,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Linq;
 
 namespace SistemaCadastroUsuarios
 {
@@ -34,7 +35,9 @@ namespace SistemaCadastroUsuarios
 
             IUsuarioDAO servicoDeDados = new MySqlUsuarioDAO();
 
-            IUsuarioService servicoDeLogica = new UsuarioService(servicoDeDados);
+            IPasswordHasher passwordHasher = new BcryptPasswordHasher();
+
+            IUsuarioService servicoDeLogica = new UsuarioService(servicoDeDados, passwordHasher);
 
             _controller = new UsuarioController(servicoDeLogica);
 
@@ -190,6 +193,65 @@ namespace SistemaCadastroUsuarios
                 usuariosParaExibir = _controller.BuscarUsuario(termo);
             }
             dgUsuarios.ItemsSource = usuariosParaExibir;
+        }
+
+        private void BtnSair_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow telaDeLogin = new MainWindow();
+
+            telaDeLogin.Show();
+
+            this.Close();
+        }
+
+        private void TxtCpf_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            int caretIndex = textBox.CaretIndex;
+
+            string cpfLimpo = new string(textBox.Text.Where(char.IsDigit).ToArray());
+
+            if (cpfLimpo.Length > 11)
+            {
+                cpfLimpo = cpfLimpo.Substring(0, 11);
+            }
+
+            string cpfFormatado = cpfLimpo;
+            if (cpfLimpo.Length > 3)
+                cpfFormatado = cpfLimpo.Insert(3, ".");
+            if (cpfLimpo.Length > 6)
+                cpfFormatado = cpfFormatado.Insert(7, ".");
+            if (cpfLimpo.Length > 9)
+                cpfFormatado = cpfFormatado.Insert(11, "-");
+
+            textBox.TextChanged -= TxtCpf_TextChanged;
+            textBox.Text = cpfFormatado;
+            textBox.TextChanged += TxtCpf_TextChanged;
+
+            try
+            {
+                if (caretIndex > 0 && caretIndex <= cpfFormatado.Length)
+                {
+                    if (cpfFormatado.Length > e.Changes.First().RemovedLength + e.Changes.First().AddedLength)
+                    {
+                        textBox.CaretIndex = caretIndex + 1;
+                    }
+                    else
+                    {
+                        textBox.CaretIndex = caretIndex;
+                    }
+                }
+                else
+                {
+                    textBox.CaretIndex = cpfFormatado.Length;
+                }
+            }
+            catch
+            {
+                textBox.CaretIndex = cpfFormatado.Length;
+            }
         }
     }
 }
