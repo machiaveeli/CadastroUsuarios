@@ -37,7 +37,7 @@ namespace SistemaCadastroUsuarios
 
             IPasswordHasher passwordHasher = new BcryptPasswordHasher();
 
-            IUsuarioService servicoDeLogica = new UsuarioService(servicoDeDados, passwordHasher);
+            IUsuarioService servicoDeLogica = new InMemoryUsuarioService();
 
             _controller = new UsuarioController(servicoDeLogica);
 

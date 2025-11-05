@@ -30,7 +30,7 @@ namespace SistemaCadastroUsuarios
 
             IPasswordHasher hasher = new BcryptPasswordHasher();
 
-            IUsuarioService servicoDeLogica = new UsuarioService(servicoDeDados, hasher);
+            IUsuarioService servicoDeLogica = new InMemoryUsuarioService();
 
             _controller = new UsuarioController(servicoDeLogica);
         }
@@ -40,26 +40,8 @@ namespace SistemaCadastroUsuarios
             var email = txtUsuario.Text;
             var senha = pwdSenha.Password;
 
-            try
-            {
-                bool loginValido = _controller.FazerLogin(email, senha); 
-
-                if (loginValido)
-                {
-                    TelaDeCadastro telaDeCadastro = new TelaDeCadastro();
-                    telaDeCadastro.Show();
-
-                    this.Close();
-                }
-                else
-                {
-                    MessageBox.Show("Email, senha ou permissão inválidos.", "Erro no Login", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ocorreu um erro inesperado: {ex.Message}", "Erro Crítico", MessageBoxButton.OK, MessageBoxImage.Stop);
-            }
+            TelaDeCadastro telaDeCadastro = new TelaDeCadastro();
+            telaDeCadastro.Show();
         }
     }
 }
