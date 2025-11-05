@@ -89,6 +89,17 @@ namespace SistemaCadastroUsuarios.Services
             return _usuarios.ToList();
         }
 
+        public bool ValidarLogin(string email, string senha)
+        {
+            var usuario = _usuarios.FirstOrDefault(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+
+            if (usuario == null)
+            {
+                return false;
+            }
+
+            return (usuario.Senha == senha && usuario.UserRoleId == 2);
+        }
         public bool ValidarDados(string nome, DateTime? dataNasci, string cpf, string email, string senha, bool ehUpdate)
         {
             if (string.IsNullOrEmpty(nome))
