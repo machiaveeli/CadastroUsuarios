@@ -12,6 +12,7 @@ namespace SistemaCadastroUsuarios.Services
         bool AdicionarUsuario(string nome, DateTime? dataNasci, string cpf, string email, string senha, int idPermissao);
         bool AtualizarUsuario(int id, string nome, DateTime? dataNasci, string cpf, string email, string senha, int idPermissao);
         bool ExcluirUsuario(int id);
+        bool ValidarLogin(string email, string senha);
         List<Usuario> ListarTodosUsuarios();
         List<Usuario> BuscarUsuarios(string termo);
         bool ValidarDados(string nome, DateTime? dataNasci, string cpf, string email, string senha, bool ehUpdate);

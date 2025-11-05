@@ -12,6 +12,7 @@ namespace SistemaCadastroUsuarios.Services
         void Adicionar(Usuario usuario);
         void Atualizar(Usuario aluno);
         void Excluir(int id);
+        Usuario GetPorEmail(string email);
         List<Usuario> ListarTodos();
         List<Usuario> Buscar(string termo);
     }
