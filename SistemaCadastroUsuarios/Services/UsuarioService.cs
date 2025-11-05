@@ -1,11 +1,12 @@
 ﻿using SistemaCadastroUsuarios.Models;
+using SistemaCadastroUsuarios.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
-using SistemaCadastroUsuarios.Services;
 
 namespace SistemaCadastroUsuarios.Controllers
 {
@@ -132,15 +133,61 @@ namespace SistemaCadastroUsuarios.Controllers
             {
                 throw new ArgumentException("O campo 'CPF' é obrigatório.");
             }
+            if (!IsCpfValido(cpf))
+            {
+                throw new ArgumentException("O CPF informado é inválido.");
+            }
+            
             if (string.IsNullOrEmpty(email))
             {
                 throw new ArgumentException("O campo 'Email' é obrigatório.");
             }
+           
+            string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            if (!Regex.IsMatch(email, emailPattern))
+            {
+                throw new ArgumentException("O formato do e-mail é inválido.");
+            }
+
             if (string.IsNullOrWhiteSpace(senha) && ehUpdate is false)
             {
                 throw new ArgumentException("O campo 'Senha' é obrigatório.");
             }
             return true;
         }
+
+        private static bool IsCpfValido(string cpf)
+        {
+            string cpfLimpo = new string(cpf.Where(char.IsDigit).ToArray());
+
+            if (cpfLimpo.Length != 11)
+                return false;
+
+            for (int i = 0; i <= 9; i++)
+            {
+                if (new string(i.ToString()[0], 11) == cpfLimpo)
+                    return false;
+            }
+
+            int soma = 0;
+            for (int i = 0; i < 9; i++)
+                soma += (10 - i) * (cpfLimpo[i] - '0');
+
+            int resto = soma % 11;
+            int digitoVerificador1 = (resto < 2) ? 0 : 11 - resto;
+
+            if (digitoVerificador1 != (cpfLimpo[9] - '0'))
+                return false;
+
+            soma = 0;
+            for (int i = 0; i < 10; i++)
+                soma += (11 - i) * (cpfLimpo[i] - '0');
+
+            resto = soma % 11;
+            int digitoVerificador2 = (resto < 2) ? 0 : 11 - resto;
+
+            return (digitoVerificador2 == (cpfLimpo[10] - '0'));
+        }
+
     }
 }
