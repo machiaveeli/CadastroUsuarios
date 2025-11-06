@@ -1,130 +1,88 @@
-Sistema de Cadastro de Usuários (WPF)
-Este é um projeto acadêmico de uma aplicação desktop (WPF) em C# para gerenciamento de usuários. A aplicação implementa um CRUD (Create, Read, Update, Delete) completo, sistema de login com hash de senha e uma arquitetura em camadas (N-Tier) para separação de responsabilidades.
+# 🧩 Sistema de Cadastro de Usuários (WPF)
 
-O sistema foi projetado para consumir um banco de dados MySQL, sendo capaz de compartilhar a mesma base de dados com outras aplicações (como um backend em PHP).
+Aplicação **desktop acadêmica** desenvolvida em **C# com WPF** para **gerenciamento de usuários**.  
+Implementa um CRUD completo, autenticação com **hash de senha (BCrypt)** e **arquitetura em camadas (N-Tier)** para melhor organização e manutenibilidade do código.
 
-✨ Funcionalidades Principais
-Sistema de Login: Autenticação de usuários para acesso ao sistema. Apenas usuários com perfil "Admin" (RoleId = 2) podem logar.
+---
 
-Gerenciamento de Usuários (CRUD):
+## ✨ Funcionalidades Principais
 
-Create: Adicionar novos usuários (com dados de Pessoa e Usuário).
+- 🔐 **Sistema de Login** – Autenticação de usuários (somente perfis “Admin” podem logar).  
+- 👤 **Gerenciamento de Usuários (CRUD)**  
+  - ➕ Criar novos usuários  
+  - 📋 Listar e pesquisar usuários  
+  - ✏️ Editar informações  
+  - ❌ Excluir registros  
+- 🔒 **Segurança:** Senhas hasheadas com **BCrypt**, nunca armazenadas em texto plano.  
+- 🧾 **Validação de Dados:**  
+  - Campos obrigatórios  
+  - Validação de e-mail (Regex)  
+  - Validação de CPF (algoritmo de dígitos verificadores)  
+  - Verificação de duplicidade de e-mail  
+- 🔍 **Busca Dinâmica:** Filtro em tempo real por nome, e-mail ou CPF.  
+- 🖥️ **Interface (UI):**  
+  - DataGrid para exibição  
+  - Formulário único para criação/edição  
+  - Máscara automática de CPF  
 
-Read: Listar e pesquisar todos os usuários cadastrados.
+---
 
-Update: Editar informações de usuários existentes.
+## 🛠️ Tecnologias Utilizadas
 
-Delete: Remover usuários do sistema.
+| Tecnologia | Descrição |
+|-------------|------------|
+| 🧠 **.NET (C#)** | Linguagem principal |
+| 🖼️ **WPF (Windows Presentation Foundation)** | Interface gráfica |
+| 🐬 **MySQL** | Banco de dados relacional |
+| 🔗 **MySql.Data** | Driver de conexão ADO.NET |
+| 🧩 **BCrypt.Net** | Hash e verificação de senhas |
 
-Segurança: As senhas nunca são salvas em texto plano. Elas são hasheadas usando BCrypt antes de serem salvas no banco.
+---
 
-Validação de Dados: Validação robusta no lado do serviço (UsuarioService) para:
+## 🏛️ Arquitetura do Projeto
 
-Campos obrigatórios.
+O projeto adota a arquitetura **N-Tier**, separando claramente as responsabilidades:
 
-Formato de e-mail (Regex).
+### 🧱 **Camadas Principais**
+- **Models** (`/Models`)  
+  Estruturas de dados e entidades (`Pessoa`, `Usuario`, `UserRole`).
 
-Validação de CPF (algoritmo de dígitos verificadores).
+- **View** (`/`)  
+  Interface visual (XAML) e lógica da interface (`MainWindow.xaml.cs`, `TelaDeCadastro.xaml.cs`).
 
-Verificação de e-mail duplicado.
+- **Controller** (`/Controllers`)  
+  Ponte entre a UI e os serviços, aplicando o padrão **façade**.
 
-Busca / Filtro: Pesquisa dinâmica de usuários no DataGrid por nome, e-mail ou CPF.
+- **Services** (`/Services`)  
+  Lógica de negócio, validações, regras e abstrações de segurança (`IUsuarioService`, `UsuarioService`, `BCryptPasswordHasher`).
 
-Interface (UI):
+- **DAO (Data Access Object)** (`/Services`)  
+  Acesso direto ao banco via interfaces (`IUsuarioDAO`, `MySqlUsuarioDAO`).
 
-Uso de DataGrid para exibição dos dados.
+💡 **Injeção de Dependência:**  
+Feita manualmente na camada de View, tornando o código **desacoplado e testável**.
 
-Formulário único para criação e edição (o estado do formulário muda dependendo se um usuário está selecionado).
+---
 
-Máscara de formatação automática para o campo CPF.
+## 🚀 Como Executar o Projeto
 
-🛠️ Tecnologias Utilizadas
-.NET (C#)
+### 1️⃣ Pré-requisitos
+- Visual Studio 2019+  
+- .NET SDK  
+- Servidor MySQL (XAMPP, WAMP ou MySQL Server)
 
-WPF (Windows Presentation Foundation): Para a interface gráfica.
+### 2️⃣ Configuração do Banco de Dados
+Execute o script SQL abaixo no seu MySQL:
 
-MySQL: Banco de dados relacional.
-
-MySql.Data: Driver de conexão ADO.NET para MySQL.
-
-BCrypt.Net: Biblioteca para hashing e verificação de senhas.
-
-🏛️ Arquitetura do Projeto
-O projeto segue uma arquitetura em camadas (N-Tier) para separar a lógica de apresentação, a lógica de negócio e o acesso a dados.
-
-Models (/Models)
-
-Representam as entidades do sistema.
-
-Pessoa.cs: Classe base com dados pessoais (Id, Nome, DataNascimento, Cpf).
-
-Usuario.cs: Herda de Pessoa e adiciona dados de autenticação (Email, Senha, UserRoleId).
-
-UserRole.cs: Representa os papéis/permissões (ex: Admin, Comum).
-
-View (/)
-
-Responsável pela UI (as janelas .xaml) e pelo code-behind (.xaml.cs).
-
-MainWindow.xaml.cs: Tela de Login.
-
-TelaDeCadastro.xaml.cs: Tela principal de CRUD (listagem, cadastro, edição).
-
-Controller (/Controllers)
-
-Atua como um intermediário (façade) entre a View e os Serviços. A View só conhece o Controller.
-
-UsuarioController.cs: Recebe solicitações da View (ex: FazerLogin) e as repassa para o IUsuarioService.
-
-Services (/Services)
-
-Contém toda a lógica de negócio do sistema.
-
-IUsuarioService.cs: Interface que define o "contrato" da lógica de usuário (o que o sistema pode fazer).
-
-UsuarioService.cs: Implementação do contrato. É aqui que ocorrem as validações (CPF, email), verificações de duplicidade e o hashing de senhas.
-
-IPasswordHasher.cs / BcryptPasswordHasher.cs: Abstração para o serviço de hashing, permitindo que o BCrypt seja trocado futuramente sem quebrar o UsuarioService.
-
-DAO (Data Access Object) (/Services)
-
-Camada responsável exclusivamente pela comunicação com o banco de dados.
-
-IUsuarioDAO.cs: Interface que define o "contrato" de acesso a dados (ex: Adicionar, Listar, GetPorEmail).
-
-MySqlUsuarioDAO.cs: Implementação que contém as queries SQL (INSERT, UPDATE, SELECT, DELETE) e a lógica de transação para o MySQL.
-
-InMemoryUsuarioService.cs: (Nota: Este arquivo parece ser uma implementação alternativa de IUsuarioService para testes em memória, não um DAO).
-
-Injeção de Dependência (ID)
-O sistema utiliza Injeção de Dependência manual na "raiz de composição" (as janelas da View). As Views (MainWindow e TelaDeCadastro) são responsáveis por criar as instâncias concretas (MySqlUsuarioDAO, BcryptPasswordHasher, UsuarioService) e "injetá-las" no construtor do UsuarioController.
-
-Isso permite que o UsuarioController e o UsuarioService dependam apenas de interfaces (IUsuarioDAO, IUsuarioService), tornando o código desacoplado e fácil de testar.
-
-🚀 Como Executar
-1. Pré-requisitos
-Visual Studio 2019 (ou mais recente)
-
-.NET SDK (compatível com o projeto)
-
-Um servidor MySQL (como MySQL Community Server, XAMPP, WAMP).
-
-2. Configuração do Banco de Dados
-O MySqlUsuarioDAO espera a seguinte estrutura de banco de dados. Execute o script abaixo no seu MySQL:
-
-SQL
-
--- 1. Crie o banco de dados
+```sql
 CREATE DATABASE IF NOT EXISTS cadastro_db;
 USE cadastro_db;
 
--- 2. Tabela de Permissões (Roles)
 CREATE TABLE IF NOT EXISTS UserRole (
     Id INT PRIMARY KEY,
     Nome VARCHAR(50) NOT NULL
 );
 
--- 3. Tabela Base (Pessoa)
 CREATE TABLE IF NOT EXISTS Pessoa (
     Id INT AUTO_INCREMENT PRIMARY KEY,
     Nome VARCHAR(255) NOT NULL,
@@ -132,52 +90,86 @@ CREATE TABLE IF NOT EXISTS Pessoa (
     Cpf VARCHAR(14) NOT NULL UNIQUE
 );
 
--- 4. Tabela de Usuários (herda de Pessoa)
 CREATE TABLE IF NOT EXISTS Usuario (
     PessoaId INT PRIMARY KEY,
     Email VARCHAR(255) NOT NULL UNIQUE,
     Senha VARCHAR(255) NOT NULL,
     RoleId INT NOT NULL,
-    
-    FOREIGN KEY (PessoaId) REFERENCES Pessoa(Id)
-        ON DELETE CASCADE, -- Importante: Deleta o Usuário se a Pessoa for deletada
+    FOREIGN KEY (PessoaId) REFERENCES Pessoa(Id) ON DELETE CASCADE,
     FOREIGN KEY (RoleId) REFERENCES UserRole(Id)
 );
 
--- 5. Inserir as permissões padrão
--- (O sistema espera RoleId=2 para Admin)
-INSERT IGNORE INTO UserRole (Id, Nome) VALUES (1, 'Comum');
-INSERT IGNORE INTO UserRole (Id, Nome) VALUES (2, 'Admin');
+INSERT IGNORE INTO UserRole (Id, Nome) VALUES (1, 'Comum'), (2, 'Admin');
 
--- 6. (Opcional) Criar um usuário Admin para testes
-/* A senha é 'admin'. O BCrypt irá gerar um hash.
-   Este script SÓ PODE SER RODADO UMA VEZ.
-*/
-/*
+-- Inserir usuário Admin padrão
 INSERT INTO Pessoa (Nome, DataNascimento, Cpf) 
 VALUES ('Administrador', '2000-01-01', '123.456.789-00');
 
--- O hash abaixo é para a senha 'admin' (gerado com BCrypt, cost 12)
+-- Senha: admin (hasheada com BCrypt, cost 12)
 INSERT INTO Usuario (PessoaId, Email, Senha, RoleId) 
 VALUES (LAST_INSERT_ID(), 'admin@admin.com', '$2a$12$Yj.eX/39m.kPKsL8f7d9lOaYd2.1lI6lZY.9.tH7Y.i5.K/S9eS.S', 2);
-*/
-3. Configurar String de Conexão
-A string de conexão com o banco de dados está hardcoded (fixa no código). Você deve alterá-la para que aponte para o seu servidor MySQL.
+```
 
-Abra o arquivo: SistemaCadastroUsuarios/Services/MySqlUsuarioDAO.cs
+### 3️⃣ Configurar a String de Conexão
+Edite em:  
+`SistemaCadastroUsuarios/Services/MySqlUsuarioDAO.cs`
 
-Localize a linha:
+```csharp
+private readonly string _connectionString = "Server=localhost;Database=cadastro_db;Uid=root;Pwd=;";
+```
 
-C#
+Atualize `Server`, `Uid` e `Pwd` conforme sua configuração.
 
-private readonly string _connectionString = "Server=localhost;Database=cadastro_db;Uid=root;Pwd=;"; //
-Altere Server, Database, Uid (usuário) e Pwd (senha) conforme a sua configuração local.
+### 4️⃣ Executar
+- Abra o `.sln` no Visual Studio  
+- Compile (Ctrl+Shift+B)  
+- Inicie (F5)  
+- Faça login com:  
+  - **Email:** admin@admin.com  
+  - **Senha:** admin  
 
-4. Rodar a Aplicação
-Abra o arquivo .sln no Visual Studio.
+---
 
-Compile a solução (Build > Build Solution ou Ctrl+Shift+B).
+## 🧪 Estrutura Visual (Exemplo)
 
-Inicie o projeto (Debug > Start Debugging ou F5).
+```
+SistemaCadastroUsuarios/
+├── Controllers/
+│   └── UsuarioController.cs
+├── Models/
+│   ├── Pessoa.cs
+│   ├── Usuario.cs
+│   └── UserRole.cs
+├── Services/
+│   ├── IUsuarioDAO.cs
+│   ├── MySqlUsuarioDAO.cs
+│   ├── IUsuarioService.cs
+│   ├── UsuarioService.cs
+│   └── BCryptPasswordHasher.cs
+└── Views/
+    ├── MainWindow.xaml
+    └── TelaDeCadastro.xaml
+```
 
-A tela de login (MainWindow) será aberta. Use as credenciais de Admin (ex: admin@admin.com / admin se você usou o script opcional) para entrar.
+---
+
+## 📚 Aprendizados e Propósito
+
+Este projeto foi desenvolvido como parte de um **trabalho acadêmico** com foco em:
+- Boas práticas de arquitetura de software  
+- Aplicação de princípios de **separação de responsabilidades**  
+- Segurança na manipulação de dados sensíveis  
+- Desenvolvimento desktop com WPF  
+
+---
+
+## 🧑‍💻 Autor
+
+**Felipe Machiaveli**  
+💼 Estudante de Análise e Desenvolvimento de Sistemas  
+🔗 [GitHub](https://github.com/Machiaveli)  
+
+---
+
+> *"Código limpo é aquele que você pode entender mesmo depois de meses sem vê-lo."*  
+> — Robert C. Martin
