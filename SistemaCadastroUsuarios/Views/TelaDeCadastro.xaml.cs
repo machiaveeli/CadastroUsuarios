@@ -36,14 +36,14 @@ namespace SistemaCadastroUsuarios
             InitializeComponent();
 
             // --- Ponto de Injeção de Dependência (Composition Root) ---
-            // Aqui decidimos qual implementação de cada interface será usada.
+
             // Para usar o MySQL:
-            IUsuarioDAO servicoDeDados = new MySqlUsuarioDAO();
-            // Para usar em memória (para testes):
-            // IUsuarioDAO servicoDeDados = new InMemoryUsuarioDAO();
+            //IUsuarioDAO servicoDeDados = new MySqlUsuarioDAO();
 
             IPasswordHasher passwordHasher = new BcryptPasswordHasher();
 
+            //Em teoria alterariamos a DAO, mas nesse caso, como não era o foco, foi utilizado em conjunto com a servie mesmo, sem ter criado uma DAO para lidar com os dados
+            // Para usar em memória (para testes):
             IUsuarioService servicoDeLogica = new InMemoryUsuarioService();
 
             _controller = new UsuarioController(servicoDeLogica);
