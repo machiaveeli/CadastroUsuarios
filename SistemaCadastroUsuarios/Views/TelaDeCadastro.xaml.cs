@@ -21,18 +21,23 @@ using System.Linq;
 namespace SistemaCadastroUsuarios
 {
     /// <summary>
-    /// Interaction logic for TelaDeCadastro.xaml
+    /// Code-behind da tela principal de CRUD de usuários.
     /// </summary>
     public partial class TelaDeCadastro : Window
     {
         private readonly UsuarioController _controller;
+        // Variável de estado para saber qual usuário está selecionado no DataGrid
         private Usuario _usuarioSelecionado = null;
+        // Cache local da lista de usuários
         private List<Usuario> _todosUsuarios = new List<Usuario>();
 
         public TelaDeCadastro()
         {
             InitializeComponent();
 
+            // --- Ponto de Injeção de Dependência (Composition Root) ---
+            // Aqui decidimos qual implementação de cada interface será usada.
+            // Para usar o MySQL:
             IUsuarioDAO servicoDeDados = new MySqlUsuarioDAO();
 
             IPasswordHasher passwordHasher = new BcryptPasswordHasher();
@@ -41,9 +46,13 @@ namespace SistemaCadastroUsuarios
 
             _controller = new UsuarioController(servicoDeLogica);
 
+            // Carrega os dados do banco assim que a tela é aberta
             CarregarUsuarios();
         }
 
+        /// <summary>
+        /// Busca os dados mais recentes do banco e atualiza o DataGrid.
+        /// </summary>
         private void CarregarUsuarios()
         {
             try
@@ -63,12 +72,17 @@ namespace SistemaCadastroUsuarios
             LimparFormulario();
         }
 
+        /// <summary>
+        /// Handler do botão "Adicionar" ou "Salvar Alterações".
+        /// A lógica decide se deve criar um novo usuário ou atualizar um existente.
+        /// </summary>
         private void BtnAdicionar_Click(object sender, RoutedEventArgs e)
         {
             int idPermissao = (chkAdmin.IsChecked ?? false) ? 2 : 1;
 
             try
             {
+                // LÓGICA PRINCIPAL: Se _usuarioSelecionado é null, é uma criação.
                 if (_usuarioSelecionado == null)
                 {
                     _controller.CriarUsuario(
@@ -107,6 +121,9 @@ namespace SistemaCadastroUsuarios
             }
         }
 
+        /// <summary>
+        /// Reseta o formulário para o estado inicial de criação.
+        /// </summary>
         private void LimparFormulario()
         {
             txtNome.Clear();
@@ -126,6 +143,9 @@ namespace SistemaCadastroUsuarios
             }
         }
 
+        /// <summary>
+        /// Atualiza a fonte de dados do DataGrid.
+        /// </summary>
         public void AtualizarListaDeUsuarios(List<Usuario> usuarios)
         {
             _todosUsuarios = usuarios;
@@ -133,6 +153,10 @@ namespace SistemaCadastroUsuarios
             dgUsuarios.ItemsSource = usuarios;
         }
 
+        /// <summary>
+        /// Evento disparado quando o usuário clica em um item do DataGrid.
+        /// Prepara o formulário para o modo de "Edição".
+        /// </summary>
         private void DgUsuarios_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _usuarioSelecionado = dgUsuarios.SelectedItem as Usuario;

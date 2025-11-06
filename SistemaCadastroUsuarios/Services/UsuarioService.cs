@@ -10,12 +10,22 @@ using System.Windows;
 
 namespace SistemaCadastroUsuarios.Controllers
 {
+    /// <summary>
+    /// Implementação da IUsuarioService. Esta classe contém a lógica de negócio
+    /// do sistema. Ela não sabe "como" os dados são salvos (SQL, Memória, etc),
+    /// apenas "o que" fazer com eles (validar, hashear, etc).
+    /// </summary>
     public class UsuarioService :  IUsuarioService
     {
+        // Dependência da camada de acesso a dados (Injeção de Dependência)
         private readonly IUsuarioDAO _usuarioDAO;
 
+        // Dependência do utilitário de hashing de senha (Injeção de Dependência)
         private readonly IPasswordHasher _passwordHasher;
 
+        /// <summary>
+        /// Construtor que recebe as dependências (Injeção de Dependência).
+        /// </summary>
         public UsuarioService(IUsuarioDAO usuarioService, IPasswordHasher passwordHasher)
         {
             _usuarioDAO = usuarioService;
@@ -23,6 +33,9 @@ namespace SistemaCadastroUsuarios.Controllers
             _passwordHasher = passwordHasher;
         }
 
+        /// <summary>
+        /// Orquestra a adição de um novo usuário.
+        /// </summary>
         public bool ValidarLogin(string email, string senha)
         {
             var usuarioDoBanco = _usuarioDAO.GetPorEmail(email);
@@ -99,6 +112,9 @@ namespace SistemaCadastroUsuarios.Controllers
             return true;
         }
 
+        // Os métodos abaixo são "pass-through", apenas repassam a chamada para o DAO.
+        // Em sistemas maiores, poderia haver lógica de cache ou mapeamento aqui.
+
         public bool ExcluirUsuario(int id)
         {
             if (id <= 0)
@@ -119,6 +135,10 @@ namespace SistemaCadastroUsuarios.Controllers
             return _usuarioDAO.ListarTodos();
         }
 
+        /// <summary>
+        /// Método central de validação de dados de entrada.
+        /// </summary>
+        /// <param name="ehUpdate">Flag para diferenciar regras de criação e atualização.</param>
         public bool ValidarDados(string nome, DateTime? dataNasci, string cpf, string email, string senha, bool ehUpdate)
         {
             if (string.IsNullOrEmpty(nome))
@@ -142,13 +162,15 @@ namespace SistemaCadastroUsuarios.Controllers
             {
                 throw new ArgumentException("O campo 'Email' é obrigatório.");
             }
-           
+
+            // Validação de formato (Regex)
             string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
             if (!Regex.IsMatch(email, emailPattern))
             {
                 throw new ArgumentException("O formato do e-mail é inválido.");
             }
 
+            // A senha só é obrigatória na criação (não no update)
             if (string.IsNullOrWhiteSpace(senha) && ehUpdate is false)
             {
                 throw new ArgumentException("O campo 'Senha' é obrigatório.");
@@ -156,19 +178,26 @@ namespace SistemaCadastroUsuarios.Controllers
             return true;
         }
 
+        /// <summary>
+        /// Algoritmo de validação de CPF (dígitos verificadores).
+        /// </summary>
         private static bool IsCpfValido(string cpf)
         {
+            /// <summary>
+            /// Algoritmo de validação de CPF (dígitos verificadores).
+            /// </summary>
             string cpfLimpo = new string(cpf.Where(char.IsDigit).ToArray());
 
             if (cpfLimpo.Length != 11)
                 return false;
-
+            // Verifica CPFs inválidos conhecidos (todos os números iguais)
             for (int i = 0; i <= 9; i++)
             {
                 if (new string(i.ToString()[0], 11) == cpfLimpo)
                     return false;
             }
 
+            // Cálculo do primeiro dígito verificador
             int soma = 0;
             for (int i = 0; i < 9; i++)
                 soma += (10 - i) * (cpfLimpo[i] - '0');
@@ -178,7 +207,7 @@ namespace SistemaCadastroUsuarios.Controllers
 
             if (digitoVerificador1 != (cpfLimpo[9] - '0'))
                 return false;
-
+            // Cálculo do segundo dígito verificador
             soma = 0;
             for (int i = 0; i < 10; i++)
                 soma += (11 - i) * (cpfLimpo[i] - '0');
@@ -186,6 +215,7 @@ namespace SistemaCadastroUsuarios.Controllers
             resto = soma % 11;
             int digitoVerificador2 = (resto < 2) ? 0 : 11 - resto;
 
+            // Retorna true se os dois dígitos calculados baterem com os do CPF
             return (digitoVerificador2 == (cpfLimpo[10] - '0'));
         }
 

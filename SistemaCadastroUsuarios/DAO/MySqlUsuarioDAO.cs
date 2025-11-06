@@ -9,16 +9,29 @@ using System.Transactions;
 
 namespace SistemaCadastroUsuarios.Services
 {
+    /// <summary>
+    /// Implementação da interface IUsuarioDAO específica para o banco de dados MySql.
+    /// Esta classe é a única responsável por construir e executar queries SQL.
+    /// </summary>
     public class MySqlUsuarioDAO : IUsuarioDAO
     {
+        // A string de conexão com o banco.
+        // Em um projeto real, isso estaria em um App.config ou appsettings.json
         private readonly string _connectionString = "Server=localhost;Database=cadastro_db;Uid=root;Pwd=;";
 
+        /// <summary>
+        /// Adiciona um novo usuário ao banco de dados, distribuindo os dados
+        /// entre as tabelas 'Pessoa' e 'Usuario'.
+        /// </summary>
+        /// <param name="usuario">O objeto Usuario. A senha já deve estar hasheada.</param>
         public void Adicionar(Usuario usuario)
         {
             using (var connection = new MySqlConnection(_connectionString))
             {
                 connection.Open();
 
+                // Inicia uma transação para garantir a atomicidade.
+                // Ou as duas inserções (Pessoa e Usuario) funcionam, ou nenhuma funciona.
                 using (var transaction = connection.BeginTransaction())
                 {
                     try
@@ -240,6 +253,12 @@ namespace SistemaCadastroUsuarios.Services
             return usuarios;
         }
 
+        /// <summary>
+        /// Busca um usuário específico pelo seu e-mail.
+        /// Crucial para a lógica de Login e para verificar duplicidade.
+        /// </summary>
+        /// <param name="email">O e-mail exato a ser buscado.</param>
+        /// <returns>O objeto Usuario (incluindo a senha hasheada) ou null se não encontrado.</returns>
         public Usuario GetPorEmail(string email)
         {
             Usuario usuario = null;
