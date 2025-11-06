@@ -166,8 +166,6 @@ Este projeto foi desenvolvido como parte de um **trabalho acadêmico** com foco 
 ## 🧑‍💻 Autor
 
 **Felipe Machiaveli**  
-💼 Estudante de Análise e Desenvolvimento de Sistemas  
-🔗 [GitHub](https://github.com/Machiaveli)  
 
 ---
 
