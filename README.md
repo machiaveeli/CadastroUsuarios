@@ -54,9 +54,9 @@ O projeto adota a arquitetura **N-Tier**, separando claramente as responsabilida
   Ponte entre a UI e os serviços, aplicando o padrão **façade**.
 
 - **Services** (`/Services`)  
-  Lógica de negócio, validações, regras e abstrações de segurança (`IUsuarioService`, `UsuarioService`, `BCryptPasswordHasher`).
+  Lógica de negócio, validações, regras e abstrações de segurança (`IUsuarioService`, `UsuarioService`, `BCryptPasswordHasher`, `IPasswordHasher`).
 
-- **DAO (Data Access Object)** (`/Services`)  
+- **DAO (Data Access Object)** (`/DAO`)  
   Acesso direto ao banco via interfaces (`IUsuarioDAO`, `MySqlUsuarioDAO`).
 
 💡 **Injeção de Dependência:**  
@@ -141,11 +141,13 @@ SistemaCadastroUsuarios/
 │   ├── Usuario.cs
 │   └── UserRole.cs
 ├── Services/
-│   ├── IUsuarioDAO.cs
-│   ├── MySqlUsuarioDAO.cs
 │   ├── IUsuarioService.cs
 │   ├── UsuarioService.cs
+│   ├── IPasswordHasher.cs
 │   └── BCryptPasswordHasher.cs
+├── DAO/
+│   ├── IUsuarioDAO.cs
+│   └── MySqlUsuarioDAO.cs
 └── Views/
     ├── MainWindow.xaml
     └── TelaDeCadastro.xaml
