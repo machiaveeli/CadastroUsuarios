@@ -107,7 +107,7 @@ VALUES ('Administrador', '2000-01-01', '123.456.789-00');
 
 -- Senha: admin (hasheada com BCrypt, cost 12)
 INSERT INTO Usuario (PessoaId, Email, Senha, RoleId) 
-VALUES (LAST_INSERT_ID(), 'admin@admin.com', '$2a$12$Yj.eX/39m.kPKsL8f7d9lOaYd2.1lI6lZY.9.tH7Y.i5.K/S9eS.S', 2);
+VALUES (LAST_INSERT_ID(), 'admin@admin.com', '$2a$12$kCzFxAoSZSyNCc9JIfswT.zY7JujnHDs0T/g.VhfZ1YlPZVbBeuZG', 2);
 ```
 
 ### 3️⃣ Configurar a String de Conexão
