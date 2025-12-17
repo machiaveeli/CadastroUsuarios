@@ -1,4 +1,5 @@
-﻿using SistemaCadastroUsuarios.Controllers;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SistemaCadastroUsuarios.Controllers;
 using SistemaCadastroUsuarios.Models;
 using SistemaCadastroUsuarios.Services;
 using System;
@@ -21,18 +22,13 @@ namespace SistemaCadastroUsuarios
     public partial class MainWindow : Window
     {
         private readonly UsuarioController _controller;
+        private readonly IServiceProvider _provider;
 
-        public MainWindow()
+        public MainWindow(UsuarioController controller, IServiceProvider provider)
         {
             InitializeComponent();
-                
-            IUsuarioDAO servicoDeDados = new MySqlUsuarioDAO();
-
-            IPasswordHasher hasher = new BcryptPasswordHasher();
-
-            IUsuarioService servicoDeLogica = new UsuarioService(servicoDeDados, hasher);
-
-            _controller = new UsuarioController(servicoDeLogica);
+            _controller = controller;
+            _provider = provider;
         }
 
         private void BtnAcessar_Click(object sender, RoutedEventArgs e)
@@ -46,7 +42,7 @@ namespace SistemaCadastroUsuarios
 
                 if (loginValido)
                 {
-                    TelaDeCadastro telaDeCadastro = new TelaDeCadastro();
+                    var telaDeCadastro = _provider.GetRequiredService<TelaDeCadastro>();
                     telaDeCadastro.Show();
 
                     this.Close();

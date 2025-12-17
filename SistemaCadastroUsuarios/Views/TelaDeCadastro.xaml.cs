@@ -17,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SistemaCadastroUsuarios
 {
@@ -31,20 +32,11 @@ namespace SistemaCadastroUsuarios
         // Cache local da lista de usuários
         private List<Usuario> _todosUsuarios = new List<Usuario>();
 
-        public TelaDeCadastro()
+        public TelaDeCadastro(UsuarioController controller)
         {
             InitializeComponent();
 
-            // --- Ponto de Injeção de Dependência (Composition Root) ---
-            // Aqui decidimos qual implementação de cada interface será usada.
-            // Para usar o MySQL:
-            IUsuarioDAO servicoDeDados = new MySqlUsuarioDAO();
-
-            IPasswordHasher passwordHasher = new BcryptPasswordHasher();
-
-            IUsuarioService servicoDeLogica = new UsuarioService(servicoDeDados, passwordHasher);
-
-            _controller = new UsuarioController(servicoDeLogica);
+            _controller = controller;
 
             // Carrega os dados do banco assim que a tela é aberta
             CarregarUsuarios();
@@ -221,10 +213,11 @@ namespace SistemaCadastroUsuarios
 
         private void BtnSair_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow telaDeLogin = new MainWindow();
+            var app = (App)Application.Current;
 
-            telaDeLogin.Show();
+            var loginWindow = app.provider.GetRequiredService<MainWindow>();
 
+            loginWindow.Show();
             this.Close();
         }
 
