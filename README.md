@@ -5,8 +5,20 @@ Implementa um CRUD completo, autenticação com **hash de senha (BCrypt)** e **a
 
 ---
 
+## 💡 Nota sobre a Decisão Arquitetural (WPF & MVC)
+
+> **Por que MVC e não MVVM?**
+>
+> Embora o padrão de mercado para WPF seja o MVVM (Model-View-ViewModel), este projeto mantém intencionalmente a estrutura **MVC (Model-View-Controller)** original do contexto acadêmico.
+>
+> **O objetivo desta refatoração é o estudo de Arquitetura de Backend.**
+> A estrutura implementada aqui (`View` → `Controller` → `Service` → `Repository`) espelha diretamente o fluxo de desenvolvimento de **APIs RESTful em ASP.NET Core**. Desta forma, este projeto serve como um laboratório prático de conceitos de Injeção de Dependência e Camadas que serão aplicados em ambientes Web.
+
+---
+
 ## ✨ Funcionalidades Principais
 
+- 🏭 **Injeção de Dependência (DI):** Implementação do container `Microsoft.Extensions.DependencyInjection` no `App.xaml` (Composition Root), eliminando acoplamento forte entre classes.
 - 🔐 **Sistema de Login** – Autenticação de usuários (somente perfis “Admin” podem logar).  
 - 👤 **Gerenciamento de Usuários (CRUD)**  
   - ➕ Criar novos usuários  
@@ -32,6 +44,7 @@ Implementa um CRUD completo, autenticação com **hash de senha (BCrypt)** e **a
 | Tecnologia | Descrição |
 |-------------|------------|
 | 🧠 **.NET (C#)** | Linguagem principal |
+| 💉 **Microsoft.Extensions.DependencyInjection** | Container de Injeção de Dependência |
 | 🖼️ **WPF (Windows Presentation Foundation)** | Interface gráfica |
 | 🐬 **MySQL** | Banco de dados relacional |
 | 🔗 **MySql.Data** | Driver de conexão ADO.NET |
@@ -44,6 +57,10 @@ Implementa um CRUD completo, autenticação com **hash de senha (BCrypt)** e **a
 O projeto adota a arquitetura **N-Tier**, separando claramente as responsabilidades:
 
 ### 🧱 **Camadas Principais**
+- **Composition Root (`App.xaml.cs`)**
+    * Responsável por configurar o `ServiceCollection` e registrar as dependências.
+    * Define o ciclo de vida dos objetos (ex: `Transient` para Controllers/Views).
+
 - **Models** (`/Models`)  
   Estruturas de dados e entidades (`Pessoa`, `Usuario`, `UserRole`).
 
@@ -134,23 +151,12 @@ Atualize `Server`, `Uid` e `Pwd` conforme sua configuração.
 
 ```
 SistemaCadastroUsuarios/
-├── Controllers/
-│   └── UsuarioController.cs
-├── Models/
-│   ├── Pessoa.cs
-│   ├── Usuario.cs
-│   └── UserRole.cs
-├── Services/
-│   ├── IUsuarioService.cs
-│   ├── UsuarioService.cs
-│   ├── IPasswordHasher.cs
-│   └── BCryptPasswordHasher.cs
-├── DAO/
-│   ├── IUsuarioDAO.cs
-│   └── MySqlUsuarioDAO.cs
-└── Views/
-    ├── MainWindow.xaml
-    └── TelaDeCadastro.xaml
+├── App.xaml.cs            <-- Configuração da Injeção de Dependência
+├── Controllers/           <-- Camada de Controle
+├── Models/                <-- Entidades
+├── Services/              <-- Regras de Negócio (Interfaces e Implementações)
+├── DAO/                   <-- Acesso a Dados
+└── Views/                 <-- Telas XAML
 ```
 
 ---
@@ -161,7 +167,7 @@ Este projeto foi desenvolvido como parte de um **trabalho acadêmico** com foco 
 - Boas práticas de arquitetura de software  
 - Aplicação de princípios de **separação de responsabilidades**  
 - Segurança na manipulação de dados sensíveis  
-- Desenvolvimento desktop com WPF  
+- Aplicação dos conceitos de DI
 
 ---
 
