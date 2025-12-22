@@ -1,14 +1,16 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using SistemaCadastroUsuarios.Controllers;
+using SistemaCadastroUsuarios.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using Microsoft.Extensions.DependencyInjection;
-using SistemaCadastroUsuarios.Controllers;
-using SistemaCadastroUsuarios.Services;
 
 namespace SistemaCadastroUsuarios
 {
@@ -17,28 +19,46 @@ namespace SistemaCadastroUsuarios
     /// </summary>
     public partial class App : Application
     {
-        public IServiceProvider provider { get; private set; }
+        public IServiceProvider Provider { get; private set; }
+        public IConfiguration Configuration { get; private set; }
 
         public App() 
         {
-            var service = new ServiceCollection();
+            var serviceCollection = new ServiceCollection();
+            ConfigureServices(serviceCollection);
+            Provider = serviceCollection.BuildServiceProvider();
+        }
 
-            service.AddTransient<IUsuarioService, UsuarioService>();
-            service.AddTransient<IPasswordHasher, BcryptPasswordHasher>();
-            service.AddTransient<UsuarioController>();
-            service.AddTransient<MainWindow>();
-            service.AddTransient<TelaDeCadastro>();
+        private void ConfigureServices(IServiceCollection services)
+        {
+            // 1. Construir a configuração (Ler o arquivo JSON)
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-            service.AddScoped<IUsuarioDAO, MySqlUsuarioDAO>();
+            Configuration = builder.Build();
 
-            provider = service.BuildServiceProvider();
+            // 2. Registrar a configuração no container (caso precise injetar IConfiguration em algum lugar)
+            services.AddSingleton<IConfiguration>(Configuration);
+            services.AddSingleton<IUsuarioDAO, MySqlUsuarioDAO>();
+
+            // 3. Exemplo: Configurando o Banco (Entity Framework) usando a connection string
+            // services.AddDbContext<SeuDbContext>(options =>
+            //     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+            // Seus outros serviços continuam aqui...
+            services.AddTransient<IUsuarioService, UsuarioService>();
+            services.AddTransient<IPasswordHasher, BcryptPasswordHasher>();
+            services.AddTransient<UsuarioController>();
+            services.AddTransient<MainWindow>();
+            services.AddTransient<TelaDeCadastro>();
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            var mainWindow = provider.GetRequiredService<MainWindow>();
+            var mainWindow = Provider.GetRequiredService<MainWindow>();
 
             mainWindow.Show();
         }
