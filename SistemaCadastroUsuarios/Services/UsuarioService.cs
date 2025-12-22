@@ -17,15 +17,10 @@ namespace SistemaCadastroUsuarios.Controllers
     /// </summary>
     public class UsuarioService :  IUsuarioService
     {
-        // Dependência da camada de acesso a dados (Injeção de Dependência)
         private readonly IUsuarioDAO _usuarioDAO;
 
-        // Dependência do utilitário de hashing de senha (Injeção de Dependência)
         private readonly IPasswordHasher _passwordHasher;
 
-        /// <summary>
-        /// Construtor que recebe as dependências (Injeção de Dependência).
-        /// </summary>
         public UsuarioService(IUsuarioDAO usuarioService, IPasswordHasher passwordHasher)
         {
             _usuarioDAO = usuarioService;

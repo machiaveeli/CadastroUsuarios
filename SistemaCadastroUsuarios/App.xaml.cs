@@ -31,22 +31,17 @@ namespace SistemaCadastroUsuarios
 
         private void ConfigureServices(IServiceCollection services)
         {
-            // 1. Construir a configuração (Ler o arquivo JSON)
+            // Construir a configuração (Ler o arquivo JSON)
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
             Configuration = builder.Build();
 
-            // 2. Registrar a configuração no container (caso precise injetar IConfiguration em algum lugar)
+            // Registrar a configuração no container (caso precise injetar IConfiguration em algum lugar)
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<IUsuarioDAO, MySqlUsuarioDAO>();
 
-            // 3. Exemplo: Configurando o Banco (Entity Framework) usando a connection string
-            // services.AddDbContext<SeuDbContext>(options =>
-            //     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-
-            // Seus outros serviços continuam aqui...
             services.AddTransient<IUsuarioService, UsuarioService>();
             services.AddTransient<IPasswordHasher, BcryptPasswordHasher>();
             services.AddTransient<UsuarioController>();
