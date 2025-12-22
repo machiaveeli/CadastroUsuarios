@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Microsoft.Extensions.Configuration;
+using MySql.Data.MySqlClient;
 using SistemaCadastroUsuarios.Models;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,12 @@ namespace SistemaCadastroUsuarios.Services
     /// </summary>
     public class MySqlUsuarioDAO : IUsuarioDAO
     {
-        // A string de conexão com o banco.
-        // Em um projeto real, isso estaria em um App.config ou appsettings.json
-        private readonly string _connectionString = "Server=localhost;Database=cadastro_db;Uid=root;Pwd=;";
+        private readonly string _connectionString;
+
+        public MySqlUsuarioDAO(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
+        }
 
         /// <summary>
         /// Adiciona um novo usuário ao banco de dados, distribuindo os dados
