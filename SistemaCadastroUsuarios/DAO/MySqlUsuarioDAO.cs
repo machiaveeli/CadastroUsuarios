@@ -15,8 +15,7 @@ namespace SistemaCadastroUsuarios.Services
     /// </summary>
     public class MySqlUsuarioDAO : IUsuarioDAO
     {
-        // A string de conexão com o banco.
-        // Em um projeto real, isso estaria em um App.config ou appsettings.json
+       
         private readonly string _connectionString = "Server=localhost;Database=cadastro_db;Uid=root;Pwd=;";
 
         /// <summary>
